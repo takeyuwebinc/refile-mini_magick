@@ -116,9 +116,10 @@ module Refile
     # @param [String] format              the file format to convert to
     # @yield [MiniMagick::Tool::Convert]
     # @return [Tempfile]                  the processed file
-    def call(file, *args, format: nil, &block)
+    def call(file, *args, &block)
+      options = args.last.is_a?(Hash) ? args.pop : {}
       pipeline = ImageProcessing::MiniMagick.source(file)
-      pipeline = pipeline.convert(format) if format
+      pipeline = pipeline.convert(options[:format]) if options[:format]
       pipeline = pipeline.custom(&block)
 
       send(@method, pipeline, *args)
